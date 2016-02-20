@@ -68,12 +68,12 @@ var DS;
 
 					/*
 					 * If there's only one item in the list and you remove it,
-					 * then this._head will be null. In that case, you should
-					 * also set this._tail to be null to effectively destroy
+					 * then this.head will be null. In that case, you should
+					 * also set this.tail to be null to effectively destroy
 					 * the list. Otherwise, set the previous pointer on the
-					 * new this._head to be null.
+					 * new this.head to be null.
 					 */
-					if (!this._head){
+					if (!this.head){
 						this.tail = null;
 					} else {
 						this.head.prev = null;
@@ -188,9 +188,10 @@ var DS;
 				node.prev = pointed;
 				this.tail = node;
 				
-			}        
-			this.pointer++
-			this.length = this.pointer + 1;
+				this.pointer++
+				
+			}    
+			this.length = this.pointer + 1;			
 			
 		}
 		
@@ -252,6 +253,17 @@ var DS;
 	DS.testDLL = function() {
 		
 		var DLL1 = DS.makeDLL();
+		DLL1.snipAndAdd({ o : "o"});
+		console.log("SIZE SHOULD BE 1",DLL1.size());
+		console.log("POINTED SHOULD BE o",DLL1.getPointed());
+		DLL1.snipAndAdd({ p : "p"});
+		console.log("SIZE SHOULD BE 2",DLL1.size());
+		console.log("POINTED SHOULD BE p",DLL1.getPointed());
+		DLL1.print();
+		DLL1.remove(1);
+		console.log("SIZE SHOULD BE 1",DLL1.size());
+		DLL1.remove(0);
+		console.log("SIZE SHOULD BE 0",DLL1.size());
 		DLL1.add({ a : "a"});
 		DLL1.add({ b : "b"});
 		var c = { c : "c"};DLL1.add(c);
@@ -280,7 +292,7 @@ var DS;
 	}
 })(DS || (DS = {}));
 
-//DS.testDLL();
+DS.testDLL();
 
 
 
