@@ -4,68 +4,239 @@ var DS;
 (function(DS){
 	'use strict';
 	
-	var SLL = function(params) {
+	var DLL = function(params) {
 		
 		
-		function SLL(params) {
-			this.start = null;
-			this.end = null;
+		function DLL(params) {
 			this.length = 0;
-			this.detach = params;
+			this.head = null;
+			this.tail = null;
+			this.pointer = 0;
+			this.params = params;
 		}
 		
 		var Node = function(data) {
 			this.next = null;
+			this.prev = null;
 			this.data = data;
 		};
 		
-		SLL.prototype.add = function(data) {
-			if (data === undefined) { throw new Error('data must be valid to add'); }
+		/**
+		 * Appends some data to the end of the list. This method traverses
+		 * the existing list and places the value at the end in a new item.
+		 * @param {variant} data The data to add to the list.
+		 * @return {Void}
+		 * @method add
+		 */
+		DLL.prototype.add = function(data) {
 
-			var newNode = new Node(data);
-
-			if (this.start === null) {
-				this.start = newNode;
+			var node = new Node(data);
+			
+			if (this.length == 0) {
+				this.head = node;
+				this.tail = node;
 			} else {
-				this.end.next = newNode;
-			}
+
+				//attach to the tail node
+				this.tail.next = node;
+				node.prev = this.tail;
+				this.tail = node;
+			}        
 
 			this.length++;
-			this.end = newNode;
+			this.pointer = this.length - 1;
+			
 		}
 		
-		SLL.prototype.remove = function(data) {
-			if (data === undefined) { throw new Error('data must be valid to add'); }
-			if (this.start === null) { return; }
-			
-			var previous = null;
-			var current = this.start;
+		 /**
+		 * Removes the item from the given location in the list.
+		 * @param {int} index The zero-based index of the item to remove.
+		 * @return {variant} The data in the given position in the list or null if
+		 *      the item doesn't exist.
+		 * @method remove
+		 */
+		DLL.prototype.remove = function(index) {
+			//check for out-of-bounds values
+			if (index > -1 && index < this.length){
 
-			while ((current !== null) && (current.data !== data)) {
-				previous = current;
+				var current = this.head,
+					i = 0;
+
+				//special case: removing first item
+				if (index === 0){
+					this.head = current.next;
+
+					/*
+					 * If there's only one item in the list and you remove it,
+					 * then this._head will be null. In that case, you should
+					 * also set this._tail to be null to effectively destroy
+					 * the list. Otherwise, set the previous pointer on the
+					 * new this._head to be null.
+					 */
+					if (!this._head){
+						this.tail = null;
+					} else {
+						this.head.prev = null;
+					}
+
+				//special case: removing last item
+				} else if (index === this.length -1){
+					current = this.tail;
+					this.tail = current.prev;
+					this.tail.next = null;
+				} else {
+
+					//find the right location
+					while(i++ < index){
+						current = current.next;
+					}
+
+					//skip over the item to remove
+					current.prev.next = current.next;
+				}
+
+				//decrement the length
+				this.length--;
+				this.pointer--;
+
+				//return the value
+				return current.data;            
+
+			} else {
+				return null;
+			}
+		}
+		
+		
+		
+		/**
+		 * Retrieves the node in the given position in the list.
+		 * @param {int} index The zero-based index of the node
+		 * @return {variant} node
+		 * @method node
+		 */
+		DLL.prototype.node = function(index) {
+
+			//check for out-of-bounds values
+			if (index > -1 && index < this.length){
+				var current = this.head,
+					i = 0;
+
+				while(i++ < index){
+					current = current.next;
+				}
+
+				return current;
+			} else {
+				return null;
+			}
+			
+		}
+		
+		 /**
+		 * Retrieves the data in the given position in the list.
+		 * @param {int} index The zero-based index of the item whose value 
+		 *      should be returned.
+		 * @return {variant} The value in the "data" portion of the given item
+		 *      or null if the item doesn't exist.
+		 * @method item
+		 */
+		DLL.prototype.item = function(index) {
+			var node = this.node(index);
+			return (node == null) ? null : node.data;
+		}
+		
+		DLL.prototype.moveBack = function() {
+			if (this.pointer > 0) {
+				this.pointer--;
+			}
+		}
+		
+		DLL.prototype.moveForward = function() {
+			if (this.pointer < (this.length -1)) {
+				this.pointer++;
+			}
+		}
+		
+		DLL.prototype.getPointed = function() {
+			return this.item(this.pointer);
+		}
+		
+		/**
+		 * Appends some data after the node pointed by the pointer
+		 * snipping the rest of the list.
+		 * @param {variant} data The data to add to the list.
+		 * @return {Void}
+		 * @method add
+		 */
+		DLL.prototype.snipAndAdd = function(data) {
+
+			var node = new Node(data);
+			
+			if (this.length == 0) {
+				this.head = node;
+				this.tail = node;
+			} else {
+				var pointed = this.node(this.pointer);
+				
+				if (pointed.next != null) {
+					var follower = pointed.next;
+					follower.prev = null;
+				}
+				
+				pointed.next = node;
+				node.prev = pointed;
+				this.tail = node;
+				
+			}        
+			this.pointer++
+			this.length = this.pointer + 1;
+			
+		}
+		
+		/**
+		 * Returns the number of items in the list.
+		 * @return {int} The number of items in the list.
+		 * @method size
+		 */
+		DLL.prototype.size = function(){
+			return this.length;
+		},
+		
+		/**
+		 * Converts the list into an array.
+		 * @return {Array} An array containing all of the data in the list.
+		 * @method toArray
+		 */
+		DLL.prototype.toArray = function(){
+			var result = [],
+				current = this.head;
+			
+			while(current){
+				result.push(current.data);
 				current = current.next;
 			}
-
-			if (current !== null) {
-				if (previous === null) {
-					this.start = this.start.next;
-				}
-				if (current.next === null) {
-					this.end = previous;
-					if (this.end !== null) {
-						this.end.next = null;
-					}
-				}
-				if ((previous !== null) && (current.next !== null)) {
-					previous.next = current.next;
-				}
-				this.length--;
-			}
-		}
+			
+			return result;
+		},
 		
-		SLL.prototype.print = function() {
+		/**
+		 * Converts the list into a string representation.
+		 * @return {String} A string representation of the list.
+		 * @method toString
+		 */
+		DLL.prototype.toString = function(){
+			return this.toArray().toString();
+		} 
+	
+		/**
+		 * Print DLL members using console.log().
+		 * @method print
+		 * @return {Void}
+		 */
+		DLL.prototype.print = function() {
 			var previous = null;
-			var current = this.start;
+			var current = this.head;
 
 			while (current !== null) {
 				console.log(current.data);
@@ -74,24 +245,43 @@ var DS;
 			}
 		}
 		
-		return new SLL(params);
+		return new DLL(params);
 	}
 	
-	DS.makeSLL = function(params) { return SLL(params) };
+	DS.makeDLL = function(params) { return DLL(params) };
+	DS.testDLL = function() {
+		
+		var DLL1 = DS.makeDLL();
+		DLL1.add({ a : "a"});
+		DLL1.add({ b : "b"});
+		var c = { c : "c"};DLL1.add(c);
+		DLL1.add({ d : "d"});
+		console.log("SIZE SHOULD BE 4",DLL1.size());
+
+		DLL1.remove(2);
+		console.log("ITEM @ INDEX 2 REMOVED SO THE SIZE SHOULD BE 3",DLL1.size());
+		console.log("AND THE ITEM @ INDEX 2 SHOULD BE {d}",DLL1.item(2));
+		console.log("SINCE POINTER WENT UP WITH EVERY ADDITION AND DOWN WITH EVERY REMOVAL IT SHOULD POINT AT NODE {d}",DLL1.getPointed());
+
+		DLL1.moveForward();
+		console.log("MOVING POINTER FORWARD SHOULD RETURN THE SAME ELEMENT {d}",DLL1.getPointed());
+
+		DLL1.moveBack();
+		console.log("MOVING POINTER BACK SHOULD RETURN ELEMENT {b}",DLL1.getPointed());
+
+		DLL1.snipAndAdd({ z : "z"});
+		console.log("SNIPPING AND ADDING ELEMENT NOW SHOULD REMOVE THE {d} AND INSERT {z} IN ITS PLACE",DLL1.item(2));
+		console.log("SIZE SHOULD REMAIN 3",DLL1.size());
+
+		console.log("AND getPointed() SHOULD RETURN {z}",DLL1.getPointed());
+
+		DLL1.print();
+		
+	}
 })(DS || (DS = {}));
 
+//DS.testDLL();
 
 
 
 
-var sll1 = DS.makeSLL(true);
-sll1.add({ a : "a"});
-sll1.add({ b : "b"});
-var c = { c : "c"};
-sll1.add(c);
-sll1.add({ d : "d"});
-
-sll1.remove(c);
-
-sll1.print();
-//console.log(sll1);
