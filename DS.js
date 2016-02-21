@@ -11,7 +11,7 @@ var DS;
 			this.length = 0;
 			this.head = null;
 			this.tail = null;
-			this.pointer = 0;
+			this.pointer = -1;
 			this.params = params;
 		}
 		
@@ -44,7 +44,7 @@ var DS;
 			}        
 
 			this.length++;
-			this.pointer = this.length - 1;
+			this.pointer++;
 			
 		};
 		
@@ -147,7 +147,7 @@ var DS;
 		};
 		
 		DLL.prototype.moveBack = function() {
-			if (this.pointer > 0) {
+			if (this.pointer > -1) {
 				this.pointer--;
 			}
 		};
@@ -176,21 +176,26 @@ var DS;
 			if (this.length == 0) {
 				this.head = node;
 				this.tail = node;
+			} else if (this.pointer == -1) {
+				var first = this.node(0);
+				if (first.next != null) {
+					var follower = first.next;
+					follower.prev = null;
+				}
+				first = null;
+				this.head = node;
+				this.tail = node;
 			} else {
 				var pointed = this.node(this.pointer);
-				
 				if (pointed.next != null) {
 					var follower = pointed.next;
 					follower.prev = null;
 				}
-				
 				pointed.next = node;
 				node.prev = pointed;
 				this.tail = node;
-				
-				this.pointer++
-				
-			}    
+			}  
+			this.pointer++			
 			this.length = this.pointer + 1;			
 			
 		};
@@ -261,7 +266,8 @@ var DS;
 		DLL1.snipAndAdd({ p : "p"});
 		console.log("SIZE SHOULD BE 2",DLL1.size());
 		console.log("POINTED SHOULD BE p",DLL1.getPointed());
-		console.log(this.toArray());
+		
+		console.log(DLL1.toArray());
 		DLL1.remove(1);
 		console.log("SIZE SHOULD BE 1",DLL1.size());
 		DLL1.remove(0);
@@ -288,13 +294,20 @@ var DS;
 		console.log("SIZE SHOULD REMAIN 3",DLL1.size());
 
 		console.log("AND getPointed() SHOULD RETURN {z}",DLL1.getPointed());
-
-		console.log(this.toArray());
+		
+		DLL1.moveBack();
+		DLL1.moveBack();
+		DLL1.moveBack();
+		console.log("MOVING BACK THREE TIMES SHOULD BRING THE POINTED TO NULL",DLL1.getPointed());
+		DLL1.snipAndAdd({ sz : "sz"});
+		console.log("AND SNIP AND ADDING HERE SHOULD BRING THE SIZE TO 1",DLL1.size());
+		console.log("RETURNING {sz} FOR POINTED",DLL1.getPointed());
+		console.log(DLL1.toArray());
 		
 	}
 })(DS || (DS = {}));
 
-//DS.testDLL();
+DS.testDLL();
 
 
 
