@@ -46,7 +46,7 @@ var DS;
 			this.length++;
 			this.pointer = this.length - 1;
 			
-		}
+		};
 		
 		 /**
 		 * Removes the item from the given location in the list.
@@ -105,7 +105,7 @@ var DS;
 			} else {
 				return null;
 			}
-		}
+		};
 		
 		
 		
@@ -131,7 +131,7 @@ var DS;
 				return null;
 			}
 			
-		}
+		};
 		
 		 /**
 		 * Retrieves the data in the given position in the list.
@@ -144,23 +144,23 @@ var DS;
 		DLL.prototype.item = function(index) {
 			var node = this.node(index);
 			return (node == null) ? null : node.data;
-		}
+		};
 		
 		DLL.prototype.moveBack = function() {
 			if (this.pointer > 0) {
 				this.pointer--;
 			}
-		}
+		};
 		
 		DLL.prototype.moveForward = function() {
 			if (this.pointer < (this.length -1)) {
 				this.pointer++;
 			}
-		}
+		};
 		
 		DLL.prototype.getPointed = function() {
 			return this.item(this.pointer);
-		}
+		};
 		
 		/**
 		 * Appends some data after the node pointed by the pointer
@@ -193,7 +193,7 @@ var DS;
 			}    
 			this.length = this.pointer + 1;			
 			
-		}
+		};
 		
 		/**
 		 * Returns the number of items in the list.
@@ -202,7 +202,7 @@ var DS;
 		 */
 		DLL.prototype.size = function(){
 			return this.length;
-		},
+		};
 		
 		/**
 		 * Converts the list into an array.
@@ -219,7 +219,24 @@ var DS;
 			}
 			
 			return result;
-		},
+		};
+		
+		/**
+		 * Respresnt nodes ad an Array
+		 * @return {Array} An array containing all the noodes
+		 * @method nodeArray
+		 */
+		DLL.prototype.nodeArray = function(){
+			var result = [],
+				current = this.head;
+			
+			while(current){
+				result.push(current);
+				current = current.next;
+			}
+			
+			return result;
+		};
 		
 		/**
 		 * Converts the list into a string representation.
@@ -228,12 +245,13 @@ var DS;
 		 */
 		DLL.prototype.toString = function(){
 			return this.toArray().toString();
-		} 
+		}; 
 		
 		return new DLL(params);
 	}
 	
 	DS.makeDLL = function(params) { return DLL(params) };
+	
 	DS.testDLL = function() {
 		
 		var DLL1 = DS.makeDLL();
