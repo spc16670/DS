@@ -229,22 +229,6 @@ var DS;
 		DLL.prototype.toString = function(){
 			return this.toArray().toString();
 		} 
-	
-		/**
-		 * Print DLL members using console.log().
-		 * @method print
-		 * @return {Void}
-		 */
-		DLL.prototype.print = function() {
-			var previous = null;
-			var current = this.head;
-
-			while (current !== null) {
-				console.log(current.data);
-				previous = current;
-				current = current.next;
-			}
-		}
 		
 		return new DLL(params);
 	}
@@ -259,7 +243,7 @@ var DS;
 		DLL1.snipAndAdd({ p : "p"});
 		console.log("SIZE SHOULD BE 2",DLL1.size());
 		console.log("POINTED SHOULD BE p",DLL1.getPointed());
-		DLL1.print();
+		console.log(this.toArray());
 		DLL1.remove(1);
 		console.log("SIZE SHOULD BE 1",DLL1.size());
 		DLL1.remove(0);
@@ -287,7 +271,7 @@ var DS;
 
 		console.log("AND getPointed() SHOULD RETURN {z}",DLL1.getPointed());
 
-		DLL1.print();
+		console.log(this.toArray());
 		
 	}
 })(DS || (DS = {}));
