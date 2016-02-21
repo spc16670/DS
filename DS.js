@@ -164,7 +164,8 @@ var DS;
 		
 		/**
 		 * Appends some data after the node pointed by the pointer
-		 * snipping the rest of the list.
+		 * snipping the rest of the list UNLESS the pointed node is
+		 * the first node. In such a case the first node is swapped.
 		 * @param {variant} data The data to add to the list.
 		 * @return {Void}
 		 * @method add
@@ -229,9 +230,9 @@ var DS;
 		/**
 		 * Respresnt nodes ad an Array
 		 * @return {Array} An array containing all the noodes
-		 * @method nodeArray
+		 * @method state
 		 */
-		DLL.prototype.nodeArray = function(){
+		DLL.prototype.state = function(){
 			var result = [],
 				current = this.head;
 			
@@ -240,7 +241,7 @@ var DS;
 				current = current.next;
 			}
 			
-			return result;
+			return { length : this.length, pointer : this.pointer, nodes : result };
 		};
 		
 		/**
@@ -307,7 +308,7 @@ var DS;
 	}
 })(DS || (DS = {}));
 
-DS.testDLL();
+//DS.testDLL();
 
 
 
