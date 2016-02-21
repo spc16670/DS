@@ -197,7 +197,7 @@ var DS;
 				pointed.next = node;
 				node.prev = pointed;
 				this.tail = node;
-				onsole.log("this.tail",this.tail);
+				console.log("this.tail",this.tail);
 			}  
 			this.pointer++			
 			this.length = this.pointer + 1;			
