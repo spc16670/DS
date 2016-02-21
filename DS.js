@@ -188,13 +188,16 @@ var DS;
 				this.tail = node;
 			} else {
 				var pointed = this.node(this.pointer);
+				console.log("this.pointer",this.pointer)
 				if (pointed.next != null) {
 					var follower = pointed.next;
+					console.log("follower",follower);
 					follower.prev = null;
 				}
 				pointed.next = node;
 				node.prev = pointed;
 				this.tail = node;
+				onsole.log("this.tail",this.tail);
 			}  
 			this.pointer++			
 			this.length = this.pointer + 1;			
